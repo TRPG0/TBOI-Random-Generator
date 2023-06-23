@@ -1,0 +1,1844 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+	
+		<meta charset="utf-8">
+		<title>The Binding of Isaac: Random Run Generator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+        <meta name="description" content="A tool that can randomly select a character, objective, and optional challenges for you when playing The Binding of Isaac. Made for creators who would like to add this to their stream via OBS, or by keying it out and editing it into their videos.">
+		<link rel="stylesheet"  href="styles.css">
+        <link rel="icon" href="assets/img/icon.png">
+
+	</head>
+	
+	<body>
+
+		<div id="jsErr">
+            <h1>Sorry!</h1>
+            <h2>You must have javascript enabled to use this page.</h2>
+        </div>
+
+        <div id="chromaOptions">
+            <p>Style: </p>
+            <input type="radio" name="chromaStyle" id="chromaStyle0" class="chromaButton">
+            <label for="chromaStyle0">Full</label>
+            <input type="radio" name="chromaStyle" id="chromaStyle1" class="chromaButton">
+            <label for="chromaStyle1">Simple A</label>
+            <br>
+            <input type="radio" name="chromaStyle" id="chromaStyle3" class="chromaButton">
+            <label for="chromaStyle3">Simple B</label>
+            <input type="radio" name="chromaStyle" id="chromaStyle2" class="chromaButton">
+            <label for="chromaStyle2">Plain text</label>
+            <br> <br>
+            <p>Alignment: </p>
+            <input type="radio" name="chromaAlign" id="chromaAlignLeft" class="chromaButton">
+            <label for="chromaAlignLeft">Left</label>
+            <input type="radio" name="chromaAlign" id="chromaAlignCenter" class="chromaButton">
+            <label for="chromaAlignCenter">Center</label>
+            <input type="radio" name="chromaAlign" id="chromaAlignRight" class="chromaButton">
+            <label for="chromaAlignRight">Right</label>
+            <br> <br>
+            <label for="chromaText">Text color (Hex): </label>
+            <input type="text" name="chromaText" id="chromaText" value="FFFFFF" maxlength="6">
+            <br>
+            <button id="chromaTextApply">Apply</button>
+            <p>Default value: White (#FFFFFF)</p>
+            <label for="chromaBG">Background color (Hex): </label>
+            <input type="text" name="chromaBG" id="chromaBG" value="00FF00" maxlength="6">
+            <br>
+            <button id="chromaBGApply">Apply</button>
+            <p>Default value: Green (#00FF00)</p>
+            <p>Note: Alignment options will only change in Simple or Plain text modes, and text color will only change in Plain text mode.</p>
+            <p>by u/TRPG_ | &commat;trpgdraws</p>
+            <p>This website is not affiliated with Edmund McMillen or Nicalis in any way.</p>
+            <p>(Last updated: Nov 13)</p>
+            <a href="../"><span class="material-icons">arrow_back</span> Back to standard version</a>
+            <br>
+            <a href="../log/"><span class="material-icons">history</span> View update log</a>
+            <br>
+            <a href="/isaac/chroma/guide/"><span class="material-icons">help</span> How do I use this?</a>
+        </div>
+
+        <div id="display">
+            <img src="assets/img/page_blood.png" id="img_page">
+            <div id="playerInfoSolo">
+                <img src="assets/img/questionmark.png" id="img_charSolo">
+                <img src="" id="img_nameSolo">
+                <div id="customTextSolo"></div>
+            </div>
+            <div id="playerInfoDuo">
+                <img src="assets/img/questionmark.png" id="img_charDuo1">
+                <img src="" id="img_nameDuo1">
+                <img src="assets/img/questionmark.png" id="img_charDuo2">
+                <img src="" id="img_nameDuo2">
+                <div id="customTextDuo1"></div>
+                <div id="customTextDuo2"></div>
+            </div>
+            <div id="playerInfoTrio">
+                <img src="assets/img/questionmark.png" id="img_charTrio1">
+                <img src="" id="img_nameTrio1">
+                <img src="assets/img/questionmark.png" id="img_charTrio2">
+                <img src="" id="img_nameTrio2">
+                <img src="assets/img/questionmark.png" id="img_charTrio3">
+                <img src="" id="img_nameTrio3">
+                <div id="customTextTrio1"></div>
+                <div id="customTextTrio2"></div>
+                <div id="customTextTrio3"></div>
+            </div>
+            <div id="playerInfoQuad">
+                <img src="assets/img/questionmark.png" id="img_charQuad1">
+                <img src="assets/img/questionmark.png" id="img_charQuad2">
+                <img src="assets/img/questionmark.png" id="img_charQuad3">
+                <img src="assets/img/questionmark.png" id="img_charQuad4">
+                <div id="customTextQuad1"></div>
+                <div id="customTextQuad2"></div>
+                <div id="customTextQuad3"></div>
+                <div id="customTextQuad4"></div>
+            </div>
+            <img src="" id="img_name">
+            <img src="" id="img_obj1">
+            <img src="" id="img_obj2">
+            <div id="challengeContainer"></div>
+        </div>
+
+        <img src="assets/img/randomize.png" id="img_randomize">
+
+        <div id="simpleDisplay">
+            <div id="simpleChar">
+                <img src="assets/img/playas.png" id="img_simplePlayAs">
+                <img src="assets/img/questionmark.png" id="img_simpleCharSolo">
+                <img src="" id="img_simpleNameSolo">
+                <img src="" id="img_simpleCharMulti1">
+                <img src="" id="img_simpleCharMulti2">
+                <img src="" id="img_simpleCharMulti3">
+                <img src="" id="img_simpleCharMulti4">
+                <p id="simpleCustom"></p>
+            </div>
+            <div id="simpleGoal">
+                <img src="assets/img/defeat.png" id="img_simpleDefeat">
+                <img src="" id="img_simpleGoal1">
+                <img src="" id="img_simplePlus">
+                <img src="" id="img_simpleGoal2">
+            </div>
+            <div id="simpleChallenges">
+                <img src="" id="img_simpleChallenges">
+                <div id="simpleChallengeContainer"></div>
+            </div>
+        </div>
+
+        <div id="simpleDisplayB">
+            <div id="simpleCharB">
+                <img src="assets/img/questionmark.png" id="img_simpleCharSoloB">
+                <img src="" id="img_simpleNameSoloB">
+                <img src="" id="img_simpleCharMulti1B">
+                <img src="" id="img_simpleCharMulti2B">
+                <img src="" id="img_simpleCharMulti3B">
+                <img src="" id="img_simpleCharMulti4B">
+                <p id="simpleCustomB"></p>
+            </div>
+            <div id="simpleGoalB">
+                <img src="" id="img_simpleGoal1B">
+                <img src="" id="img_simplePlusB">
+                <img src="" id="img_simpleGoal2B">
+            </div>
+            <div id="simpleChallengesB">
+                <img src="" id="img_simpleChallengesB">
+                <div id="simpleChallengeContainerB"></div>
+            </div>
+        </div>
+
+        <img src="assets/img/options.png" alt="Options" id="img_options">
+
+        <div id="markAsCompleteDiv">
+            <p><img src="assets/img/check.svg" alt="A checkmark" class="socialLogo"> Mark current objectives as complete</p>
+        </div>
+
+        <div id="result">
+            <p>Play as: <span id="finalChar">?</span></p>
+            <p id="finalGoal">Defeat: </p>
+            <p id="finalChallenge"></p>
+        </div>
+
+        <div id="options1">
+
+            <div id="options2">
+
+                <h2>Save/Load Settings</h2>
+                <p>Save settings to file: <button id="saveFile">Save</button></p>
+                <p>Load settings from file: <input type="file" accept="application/json" onchange="loadFile(this)" name="settingsFile" id="settingsFile"><span id="fileResult"></span></p> 
+
+                <div class="divider"></div>
+
+                <h2>Presets</h2>
+                <p>Applying presets will override selected characters and objectives.</p>
+                <button id="presetRebirth">Rebirth</button>
+                <button id="presetAfterbirth">Afterbirth</button>
+                <button id="presetAntibirth">Antibirth</button>
+                <button id="presetAfterbirthPlus">Afterbirth&#10013;</button>
+                <button id="presetRepentance">Repentance</button>
+                <br><br>
+
+                <div class="divider"></div>
+
+                <h2>Number of Players</h2>
+                <label for="numPlayers1">1</label>
+                <input type="radio" id="numPlayers1" name="numPlayers" class="numPlayers" value="1" checked>
+                <label for="numPlayers2">2</label>
+                <input type="radio" id="numPlayers2" name="numPlayers" class="numPlayers" value="2">
+                <label for="numPlayers3">3</label>
+                <input type="radio" id="numPlayers3" name="numPlayers" class="numPlayers" value="3">
+                <label for="numPlayers4">4</label>
+                <input type="radio" id="numPlayers4" name="numPlayers" class="numPlayers" value="4">
+                <br> <br>
+                <input type="checkbox" id="duplicateCheck" name="duplicateCheck">
+                <label for="duplicateCheck">Don't let multiple players get the same character</label>
+                <br> 
+                <p>Note: completion tracking will be ignored if using more than 1 player.</p>
+
+                <div class="divider"></div>
+
+                <h2>Characters</h2>
+                <button id="checkAllChar">Check All</button>
+                <button id="checkNormalChar">Normal Only</button>
+                <button id="checkTaintedChar">Tainted Only</button>
+                <button id="uncheckAllChar">Uncheck All</button>
+                <br> <br>
+                <button id="weightShow">Enable Weights</button>
+                <button id="weightHide">Disable Weights</button>
+                <button id="weightReset">Reset All Weights</button>
+                <br> <br>
+                <input type="checkbox" id="c1" class="char" checked="true">
+                <label for="c1">Isaac</label>
+                <label for="w1" class="weightLabel">- Weight: </label>
+                <input type="number" id="w1" name="w1" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c2" class="char" checked="true">
+                <label for="c2">Magdalene</label>
+                <label for="w2" class="weightLabel">- Weight: </label>
+                <input type="number" id="w2" name="w2" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c3" class="char" checked="true">
+                <label for="c3">Cain</label>
+                <label for="w3" class="weightLabel">- Weight: </label>
+                <input type="number" id="w3" name="w3" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c4" class="char" checked="true">
+                <label for="c4">Judas</label>
+                <label for="w4" class="weightLabel">- Weight: </label>
+                <input type="number" id="w4" name="w4" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c5" class="char" checked="true">
+                <label for="c5">&quest;&quest;&quest;</label>
+                <label for="w5" class="weightLabel">- Weight: </label>
+                <input type="number" id="w5" name="w5" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c6" class="char" checked="true">
+                <label for="c6">Eve</label>
+                <label for="w6" class="weightLabel">- Weight: </label>
+                <input type="number" id="w6" name="w6" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c7" class="char" checked="true">
+                <label for="c7">Samson</label>
+                <label for="w7" class="weightLabel">- Weight: </label>
+                <input type="number" id="w7" name="w7" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c8" class="char" checked="true">
+                <label for="c8">Azazel</label>
+                <label for="w8" class="weightLabel">- Weight: </label>
+                <input type="number" id="w8" name="w8" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c9" class="char" checked="true">
+                <label for="c9">Lazarus</label>
+                <label for="w9" class="weightLabel">- Weight: </label>
+                <input type="number" id="w9" name="w9" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c10" class="char" checked="true">
+                <label for="c10">Eden</label>
+                <label for="w10" class="weightLabel">- Weight: </label>
+                <input type="number" id="w10" name="w10" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c11" class="char" checked="true">
+                <label for="c11">The Lost</label>
+                <label for="w11" class="weightLabel">- Weight: </label>
+                <input type="number" id="w11" name="w11" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c12" class="char" checked="true">
+                <label for="c12">Lilith</label>
+                <label for="w12" class="weightLabel">- Weight: </label>
+                <input type="number" id="w12" name="w12" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c13" class="char" checked="true">
+                <label for="c13">Keeper</label>
+                <label for="w13" class="weightLabel">- Weight: </label>
+                <input type="number" id="w13" name="w13" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c14" class="char" checked="true">
+                <label for="c14">Apollyon</label>
+                <label for="w14" class="weightLabel">- Weight: </label>
+                <input type="number" id="w14" name="w14" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c15" class="char" checked="true">
+                <label for="c15">The Forgotten</label>
+                <label for="w15" class="weightLabel">- Weight: </label>
+                <input type="number" id="w15" name="w15" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c16" class="char" checked="true">
+                <label for="c16">Bethany</label>
+                <label for="w16" class="weightLabel">- Weight: </label>
+                <input type="number" id="w16" name="w16" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c17" class="char" checked="true">
+                <label for="c17">Jacob &amp; Esau</label>
+                <label for="w17" class="weightLabel">- Weight: </label>
+                <input type="number" id="w17" name="w17" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c18" class="char" checked="true">
+                <label for="c18">Tainted Isaac</label>
+                <label for="w18" class="weightLabel">- Weight: </label>
+                <input type="number" id="w18" name="w18" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c19" class="char" checked="true">
+                <label for="c19">Tainted Magdalene</label>
+                <label for="w19" class="weightLabel">- Weight: </label>
+                <input type="number" id="w19" name="w19" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c20" class="char" checked="true">
+                <label for="c20">Tainted Cain</label>
+                <label for="w20" class="weightLabel">- Weight: </label>
+                <input type="number" id="w20" name="w20" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c21" class="char" checked="true">
+                <label for="c21">Tainted Judas</label>
+                <label for="w21" class="weightLabel">- Weight: </label>
+                <input type="number" id="w21" name="w21" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c22" class="char" checked="true">
+                <label for="c22">Tainted &quest;&quest;&quest;</label>
+                <label for="w22" class="weightLabel">- Weight: </label>
+                <input type="number" id="w22" name="w22" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c23" class="char" checked="true">
+                <label for="c23">Tainted Eve</label>
+                <label for="w23" class="weightLabel">- Weight: </label>
+                <input type="number" id="w23" name="w23" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c24" class="char" checked="true">
+                <label for="c24">Tainted Samson</label>
+                <label for="w24" class="weightLabel">- Weight: </label>
+                <input type="number" id="w24" name="w24" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c25" class="char" checked="true">
+                <label for="c25">Tainted Azazel</label>
+                <label for="w25" class="weightLabel">- Weight: </label>
+                <input type="number" id="w25" name="w25" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c26" class="char" checked="true">
+                <label for="c26">Tainted Lazarus</label>
+                <label for="w26" class="weightLabel">- Weight: </label>
+                <input type="number" id="w26" name="w26" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c27" class="char" checked="true">
+                <label for="c27">Tainted Eden</label>
+                <label for="w27" class="weightLabel">- Weight: </label>
+                <input type="number" id="w27" name="w27" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c28" class="char" checked="true">
+                <label for="c28">Tainted Lost</label>
+                <label for="w28" class="weightLabel">- Weight: </label>
+                <input type="number" id="w28" name="w28" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c29" class="char" checked="true">
+                <label for="c29">Tainted Lilith</label>
+                <label for="w29" class="weightLabel">- Weight: </label>
+                <input type="number" id="w29" name="w29" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c30" class="char" checked="true">
+                <label for="c30">Tainted Keeper</label>
+                <label for="w30" class="weightLabel">- Weight: </label>
+                <input type="number" id="w30" name="w30" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c31" class="char" checked="true">
+                <label for="c31">Tainted Apollyon</label>
+                <label for="w31" class="weightLabel">- Weight: </label>
+                <input type="number" id="w31" name="w31" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c32" class="char" checked="true">
+                <label for="c32">Tainted Forgotten</label>
+                <label for="w32" class="weightLabel">- Weight: </label>
+                <input type="number" id="w32" name="w32" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c33" class="char" checked="true">
+                <label for="c33">Tainted Bethany</label>
+                <label for="w33" class="weightLabel">- Weight: </label>
+                <input type="number" id="w33" name="w33" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br>
+                <input type="checkbox" id="c34" class="char" checked="true">
+                <label for="c34">Tainted Jacob</label>
+                <label for="w34" class="weightLabel">- Weight: </label>
+                <input type="number" id="w34" name="w34" value="1.0" min="0.1" max="1" step="0.1" class="weight">
+                <br> <br>
+
+
+                <input type="checkbox" id="customCheck" class="" checked="false">
+                <label for="customCheck">Allow custom characters?</label>
+                <br>
+                <button id="customShow">Show Characters</button>
+                <button id="customHide">Hide Characters</button>
+                <br>
+                <br>
+                <div id="customChars">
+                    <input type="checkbox" id="customc1" class="char custom customInput" checked="false">
+                    <label for="customc1">Custom 1</label>
+                    <label for="customn1"> - Name: </label>
+                    <input type="text" id="customn1" name="customn1" maxlength="20" class="customInput">
+                    <label for="customw1" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw1" name="customw1" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc2" class="char custom customInput" checked="false">
+                    <label for="customc2">Custom 2</label>
+                    <label for="customn2"> - Name: </label>
+                    <input type="text" id="customn2" name="customn2" maxlength="20" class="customInput">
+                    <label for="customw2" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw2" name="customw2" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc3" class="char custom customInput" checked="false">
+                    <label for="customc3">Custom 3</label>
+                    <label for="customn3"> - Name: </label>
+                    <input type="text" id="customn3" name="customn3" maxlength="20" class="customInput">
+                    <label for="customw3" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw3" name="customw3" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc4" class="char custom customInput" checked="false">
+                    <label for="customc4">Custom 4</label>
+                    <label for="customn4"> - Name: </label>
+                    <input type="text" id="customn4" name="customn4" maxlength="20" class="customInput">
+                    <label for="customw4" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw4" name="customw4" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc5" class="char custom customInput" checked="false">
+                    <label for="customc5">Custom 5</label>
+                    <label for="customn5"> - Name: </label>
+                    <input type="text" id="customn5" name="customn5" maxlength="20" class="customInput">
+                    <label for="customw5" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw5" name="customw5" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br> 
+                    <input type="checkbox" id="customc6" class="char custom customInput" checked="false">
+                    <label for="customc6">Custom 6</label>
+                    <label for="customn6"> - Name: </label>
+                    <input type="text" id="customn6" name="customn6" maxlength="20" class="customInput">
+                    <label for="customw6" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw6" name="customw6" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc7" class="char custom customInput" checked="false">
+                    <label for="customc7">Custom 7</label>
+                    <label for="customn7"> - Name: </label>
+                    <input type="text" id="customn7" name="customn7" maxlength="20" class="customInput">
+                    <label for="customw7" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw7" name="customw7" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc8" class="char custom customInput" checked="false">
+                    <label for="customc8">Custom 8</label>
+                    <label for="customn8"> - Name: </label>
+                    <input type="text" id="customn8" name="customn8" maxlength="20" class="customInput">
+                    <label for="customw8" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw8" name="customw8" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc9" class="char custom customInput" checked="false">
+                    <label for="customc9">Custom 9</label>
+                    <label for="customn9"> - Name: </label>
+                    <input type="text" id="customn9" name="customn9" maxlength="20" class="customInput">
+                    <label for="customw9" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw9" name="customw9" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc10" class="char custom customInput" checked="false">
+                    <label for="customc10">Custom 10</label>
+                    <label for="customn10"> - Name: </label>
+                    <input type="text" id="customn10" name="customn10" maxlength="20" class="customInput">
+                    <label for="customw10" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw10" name="customw10" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc11" class="char custom customInput" checked="false">
+                    <label for="customc11">Custom 11</label>
+                    <label for="customn11"> - Name: </label>
+                    <input type="text" id="customn11" name="customn11" maxlength="20" class="customInput">
+                    <label for="customw11" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw11" name="customw11" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc12" class="char custom customInput" checked="false">
+                    <label for="customc12">Custom 12</label>
+                    <label for="customn12"> - Name: </label>
+                    <input type="text" id="customn12" name="customn12" maxlength="20" class="customInput">
+                    <label for="customw12" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw12" name="customw12" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc13" class="char custom customInput" checked="false">
+                    <label for="customc13">Custom 13</label>
+                    <label for="customn13"> - Name: </label>
+                    <input type="text" id="customn13" name="customn13" maxlength="20" class="customInput">
+                    <label for="customw13" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw13" name="customw13" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc14" class="char custom customInput" checked="false">
+                    <label for="customc14">Custom 14</label>
+                    <label for="customn14"> - Name: </label>
+                    <input type="text" id="customn14" name="customn14" maxlength="20" class="customInput">
+                    <label for="customw14" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw14" name="customw14" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc15" class="char custom customInput" checked="false">
+                    <label for="customc15">Custom 15</label>
+                    <label for="customn15"> - Name: </label>
+                    <input type="text" id="customn15" name="customn15" maxlength="20" class="customInput">
+                    <label for="customw15" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw15" name="customw15" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc16" class="char custom customInput" checked="false">
+                    <label for="customc16">Custom 16</label>
+                    <label for="customn16"> - Name: </label>
+                    <input type="text" id="customn16" name="customn16" maxlength="20" class="customInput">
+                    <label for="customw16" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw16" name="customw16" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc17" class="char custom customInput" checked="false">
+                    <label for="customc17">Custom 17</label>
+                    <label for="customn17"> - Name: </label>
+                    <input type="text" id="customn17" name="customn17" maxlength="20" class="customInput">
+                    <label for="customw17" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw17" name="customw17" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc18" class="char custom customInput" checked="false">
+                    <label for="customc18">Custom 18</label>
+                    <label for="customn18"> - Name: </label>
+                    <input type="text" id="customn18" name="customn18" maxlength="20" class="customInput">
+                    <label for="customw18" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw18" name="customw18" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc19" class="char custom customInput" checked="false">
+                    <label for="customc19">Custom 19</label>
+                    <label for="customn19"> - Name: </label>
+                    <input type="text" id="customn19" name="customn19" maxlength="20" class="customInput">
+                    <label for="customw19" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw19" name="customw19" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                    <input type="checkbox" id="customc20" class="char custom customInput" checked="false">
+                    <label for="customc20">Custom 20</label>
+                    <label for="customn20"> - Name: </label>
+                    <input type="text" id="customn20" name="customn20" maxlength="20" class="customInput">
+                    <label for="customw20" class="weightLabel">- Weight: </label>
+                    <input type="number" id="customw20" name="customw20" value="1.0" min="0.1" max="1" step="0.1" class="weight customInput">
+                    <br>
+                </div>
+                <br>
+
+                <div class="divider"></div>
+
+                <h2>Objectives</h2>
+                <button id="checkAllGoal">Check All</button>
+                <button id="uncheckAllGoal">Uncheck All</button>
+                <br> <br>
+                <button id="gWeightShow">Enable Weights</button>
+                <button id="gWeightHide">Disable Weights</button>
+                <button id="gWeightReset">Reset All Weights</button>
+                <br> <br>
+                <input type="checkbox" id="g1" class="goal" checked="true">
+                <label for="g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                <label for="gw1" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw1" name="gw1" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br>
+                <input type="checkbox" id="g2" class="goal" checked="true">
+                <label for="g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                <label for="gw2" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw2" name="gw2" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br>
+                <input type="checkbox" id="g3" class="goal" checked="true">
+                <label for="g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                <label for="gw3" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw3" name="gw3" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br>
+                <input type="checkbox" id="g4" class="goal" checked="true">
+                <label for="g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                <label for="gw4" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw4" name="gw4" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br>
+                <input type="checkbox" id="g5" class="goal" checked="true">
+                <label for="g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                <label for="gw5" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw5" name="gw5" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br>
+                <input type="checkbox" id="g6" class="goal" checked="true">
+                <label for="g6"><img src="assets/img/g6_icon.png">Mother</label>
+                <label for="gw6" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw6" name="gw6" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br>
+                <input type="checkbox" id="g7" class="goal" checked="true">
+                <label for="g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                <label for="gw7" class="gWeightLabel">- Weight: </label>
+                <input type="number" id="gw7" name="gw7" value="1.0" min="0.1" max="1" step="0.1" class="gWeight">
+                <br> <br>
+                <input type="checkbox" id="timedCheck" class="" checked="true">
+                <label for="timedCheck">Allow timed objectives?</label>
+                <br>
+                <label for="timedChance">Chance to get a timed objective (&percnt;): </label>
+                <input type="number" id="timedChance" name="timedChance" value="50" min="1" max="100" step="1">
+                <br>
+                <input type="checkbox" id="t1" class="timedGoal" checked="true">
+                <label for="t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                <br>
+                <input type="checkbox" id="t2" class="timedGoal" checked="true">
+                <label for="t2"><img src="assets/img/g9_icon.png">Hush</label>
+                <br> <br>
+
+                <div class="divider"></div>
+
+                <h2>Extra Challenges</h2>
+                <button id="checkAllChallenge">Check All</button>
+                <button id="uncheckAllChallenge">Uncheck All</button>
+                <br> <br>
+                <input type="checkbox" id="challengeCheck" class="">
+                <label for="challengeCheck">Guarantee at least 1 additional challenge?</label>
+                <p>Due to the logic of how challenges are selected, it can still be possible to have 0 challenges if the selected boss is Mother, Ultra Greed, or Mega Satan.</p>
+                <label for="challengeChance">Chance for each additional challenge (&percnt;): </label>
+                <input type="number" id="challengeChance" name="challengeChance" value="20" min="1" max="100" step="1">
+                <br> <br>
+                <input type="checkbox" id="ch1" class="challenge" checked="true">
+                <label for="ch1"><img src="assets/img/ch1.png">No using consumables</label>
+                <br>
+                <input type="checkbox" id="ch2" class="challenge" checked="true">
+                <label for="ch2"><img src="assets/img/ch2.png">No opening chests (except end-of-run chests)</label>
+                <br>
+                <input type="checkbox" id="ch3" class="challenge" checked="true">
+                <label for="ch3"><img src="assets/img/ch3.png">No trinkets</label>
+                <br>
+                <input type="checkbox" id="ch4" class="challenge" checked="true">
+                <label for="ch4"><img src="assets/img/ch4.png">No using machines/beggars</label>
+                <br>
+                <input type="checkbox" id="ch5" class="challenge" checked="true">
+                <label for="ch5"><img src="assets/img/ch5.png">No self damage (curse rooms, sacrifice rooms, devil beggars, etc.)</label>
+                <br>
+                <input type="checkbox" id="ch6" class="challenge" checked="true">
+                <label for="ch6"><img src="assets/img/ch6.png">No shops</label>
+                <br>
+                <input type="checkbox" id="ch7" class="challenge" checked="true">
+                <label for="ch7"><img src="assets/img/ch7.png">No secret rooms (of any kind)</label>
+                <br>
+                <input type="checkbox" id="ch8" class="challenge" checked="true">
+                <label for="ch8"><img src="assets/img/ch8.png">No devil rooms</label>
+                <br>
+                <input type="checkbox" id="ch9" class="challenge" checked="true">
+                <label for="ch9"><img src="assets/img/ch9.png">No angel rooms</label>
+                <br>
+                <input type="checkbox" id="ch10" class="challenge" checked="true">
+                <label for="ch10"><img src="assets/img/ch10.png">Travel down Repentance's alternate path</label>
+                <br>
+                <input type="checkbox" id="ch11" class="challenge" checked="true">
+                <label for="ch11"><img src="assets/img/ch11.png">Skip all Treasure Rooms until a Planetarium appears</label>
+                <br>
+                <input type="checkbox" id="ch12" class="challenge" checked="true">
+                <label for="ch12"><img src="assets/img/ch12.png">Always take unknown (&quest;) items</label>
+                <br> <br>
+
+                <div class="divider"></div>
+
+                <h2>Set Completion Marks</h2>
+                <button id="showCompletion">Show</button>
+                <button id="hideCompletion">Hide</button>
+                <br>
+                <div id="completion">
+                    <p>Note: This tool does not keep track of defeating Mom's Heart/It Lives, Satan, or Isaac.</p>
+                    <p>Completion will not be tracked for custom characters.</p>
+                    <h3>Isaac</h3>
+                    <button id="checkAllC1">Check All</button>
+                    <button id="uncheckAllC1">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c1_g1" class="completion-c1">
+                    <label for="c_c1_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_g2" class="completion-c1">
+                    <label for="c_c1_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_g3" class="completion-c1">
+                    <label for="c_c1_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_g4" class="completion-c1">
+                    <label for="c_c1_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_g5" class="completion-c1">
+                    <label for="c_c1_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_g6" class="completion-c1">
+                    <label for="c_c1_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_g7" class="completion-c1">
+                    <label for="c_c1_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_t1" class="completion-c1">
+                    <label for="c_c1_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c1_t2" class="completion-c1">
+                    <label for="c_c1_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Magdalene</h3>
+                    <button id="checkAllC2">Check All</button>
+                    <button id="uncheckAllC2">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c2_g1" class="completion-c2">
+                    <label for="c_c2_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_g2" class="completion-c2">
+                    <label for="c_c2_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_g3" class="completion-c2">
+                    <label for="c_c2_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_g4" class="completion-c2">
+                    <label for="c_c2_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_g5" class="completion-c2">
+                    <label for="c_c2_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_g6" class="completion-c2">
+                    <label for="c_c2_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_g7" class="completion-c2">
+                    <label for="c_c2_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_t1" class="completion-c2">
+                    <label for="c_c2_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c2_t2" class="completion-c2">
+                    <label for="c_c2_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Cain</h3>
+                    <button id="checkAllC3">Check All</button>
+                    <button id="uncheckAllC3">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c3_g1" class="completion-c3">
+                    <label for="c_c3_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_g2" class="completion-c3">
+                    <label for="c_c3_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_g3" class="completion-c3">
+                    <label for="c_c3_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_g4" class="completion-c3">
+                    <label for="c_c3_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_g5" class="completion-c3">
+                    <label for="c_c3_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_g6" class="completion-c3">
+                    <label for="c_c3_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_g7" class="completion-c3">
+                    <label for="c_c3_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_t1" class="completion-c3">
+                    <label for="c_c3_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c3_t2" class="completion-c3">
+                    <label for="c_c3_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Judas</h3>
+                    <button id="checkAllC4">Check All</button>
+                    <button id="uncheckAllC4">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c4_g1" class="completion-c4">
+                    <label for="c_c4_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_g2" class="completion-c4">
+                    <label for="c_c4_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_g3" class="completion-c4">
+                    <label for="c_c4_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_g4" class="completion-c4">
+                    <label for="c_c4_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_g5" class="completion-c4">
+                    <label for="c_c4_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_g6" class="completion-c4">
+                    <label for="c_c4_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_g7" class="completion-c4">
+                    <label for="c_c4_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_t1" class="completion-c4">
+                    <label for="c_c4_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c4_t2" class="completion-c4">
+                    <label for="c_c4_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>&quest;&quest;&quest;</h3>
+                    <button id="checkAllC5">Check All</button>
+                    <button id="uncheckAllC5">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c5_g1" class="completion-c5">
+                    <label for="c_c5_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_g2" class="completion-c5">
+                    <label for="c_c5_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_g3" class="completion-c5">
+                    <label for="c_c5_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_g4" class="completion-c5">
+                    <label for="c_c5_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_g5" class="completion-c5">
+                    <label for="c_c5_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_g6" class="completion-c5">
+                    <label for="c_c5_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_g7" class="completion-c5">
+                    <label for="c_c5_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_t1" class="completion-c5">
+                    <label for="c_c5_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c5_t2" class="completion-c5">
+                    <label for="c_c5_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Eve</h3>
+                    <button id="checkAllC6">Check All</button>
+                    <button id="uncheckAllC6">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c6_g1" class="completion-c6">
+                    <label for="c_c6_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_g2" class="completion-c6">
+                    <label for="c_c6_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_g3" class="completion-c6">
+                    <label for="c_c6_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_g4" class="completion-c6">
+                    <label for="c_c6_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_g5" class="completion-c6">
+                    <label for="c_c6_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_g6" class="completion-c6">
+                    <label for="c_c6_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_g7" class="completion-c6">
+                    <label for="c_c6_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_t1" class="completion-c6">
+                    <label for="c_c6_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c6_t2" class="completion-c6">
+                    <label for="c_c6_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Samson</h3>
+                    <button id="checkAllC7">Check All</button>
+                    <button id="uncheckAllC7">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c7_g1" class="completion-c7">
+                    <label for="c_c7_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_g2" class="completion-c7">
+                    <label for="c_c7_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_g3" class="completion-c7">
+                    <label for="c_c7_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_g4" class="completion-c7">
+                    <label for="c_c7_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_g5" class="completion-c7">
+                    <label for="c_c7_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_g6" class="completion-c7">
+                    <label for="c_c7_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_g7" class="completion-c7">
+                    <label for="c_c7_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_t1" class="completion-c7">
+                    <label for="c_c7_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c7_t2" class="completion-c7">
+                    <label for="c_c7_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Azazel</h3>
+                    <button id="checkAllC8">Check All</button>
+                    <button id="uncheckAllC8">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c8_g1" class="completion-c8">
+                    <label for="c_c8_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_g2" class="completion-c8">
+                    <label for="c_c8_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_g3" class="completion-c8">
+                    <label for="c_c8_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_g4" class="completion-c8">
+                    <label for="c_c8_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_g5" class="completion-c8">
+                    <label for="c_c8_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_g6" class="completion-c8">
+                    <label for="c_c8_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_g7" class="completion-c8">
+                    <label for="c_c8_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_t1" class="completion-c8">
+                    <label for="c_c8_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c8_t2" class="completion-c8">
+                    <label for="c_c8_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Lazarus</h3>
+                    <button id="checkAllC9">Check All</button>
+                    <button id="uncheckAllC9">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c9_g1" class="completion-c9">
+                    <label for="c_c9_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_g2" class="completion-c9">
+                    <label for="c_c9_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_g3" class="completion-c9">
+                    <label for="c_c9_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_g4" class="completion-c9">
+                    <label for="c_c9_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_g5" class="completion-c9">
+                    <label for="c_c9_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_g6" class="completion-c9">
+                    <label for="c_c9_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_g7" class="completion-c9">
+                    <label for="c_c9_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_t1" class="completion-c9">
+                    <label for="c_c9_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c9_t2" class="completion-c9">
+                    <label for="c_c9_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Eden</h3>
+                    <button id="checkAllC10">Check All</button>
+                    <button id="uncheckAllC10">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c10_g1" class="completion-c10">
+                    <label for="c_c10_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_g2" class="completion-c10">
+                    <label for="c_c10_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_g3" class="completion-c10">
+                    <label for="c_c10_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_g4" class="completion-c10">
+                    <label for="c_c10_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_g5" class="completion-c10">
+                    <label for="c_c10_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_g6" class="completion-c10">
+                    <label for="c_c10_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_g7" class="completion-c10">
+                    <label for="c_c10_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_t1" class="completion-c10">
+                    <label for="c_c10_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c10_t2" class="completion-c10">
+                    <label for="c_c10_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>The Lost</h3>
+                    <button id="checkAllC11">Check All</button>
+                    <button id="uncheckAllC11">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c11_g1" class="completion-c11">
+                    <label for="c_c11_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_g2" class="completion-c11">
+                    <label for="c_c11_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_g3" class="completion-c11">
+                    <label for="c_c11_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_g4" class="completion-c11">
+                    <label for="c_c11_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_g5" class="completion-c11">
+                    <label for="c_c11_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_g6" class="completion-c11">
+                    <label for="c_c11_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_g7" class="completion-c11">
+                    <label for="c_c11_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_t1" class="completion-c11">
+                    <label for="c_c11_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c11_t2" class="completion-c11">
+                    <label for="c_c11_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Lilith</h3>
+                    <button id="checkAllC12">Check All</button>
+                    <button id="uncheckAllC12">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c12_g1" class="completion-c12">
+                    <label for="c_c12_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_g2" class="completion-c12">
+                    <label for="c_c12_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_g3" class="completion-c12">
+                    <label for="c_c12_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_g4" class="completion-c12">
+                    <label for="c_c12_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_g5" class="completion-c12">
+                    <label for="c_c12_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_g6" class="completion-c12">
+                    <label for="c_c12_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_g7" class="completion-c12">
+                    <label for="c_c12_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_t1" class="completion-c12">
+                    <label for="c_c12_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c12_t2" class="completion-c12">
+                    <label for="c_c12_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Keeper</h3>
+                    <button id="checkAllC13">Check All</button>
+                    <button id="uncheckAllC13">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c13_g1" class="completion-c13">
+                    <label for="c_c13_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_g2" class="completion-c13">
+                    <label for="c_c13_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_g3" class="completion-c13">
+                    <label for="c_c13_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_g4" class="completion-c13">
+                    <label for="c_c13_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_g5" class="completion-c13">
+                    <label for="c_c13_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_g6" class="completion-c13">
+                    <label for="c_c13_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_g7" class="completion-c13">
+                    <label for="c_c13_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_t1" class="completion-c13">
+                    <label for="c_c13_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c13_t2" class="completion-c13">
+                    <label for="c_c13_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Apollyon</h3>
+                    <button id="checkAllC14">Check All</button>
+                    <button id="uncheckAllC14">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c14_g1" class="completion-c14">
+                    <label for="c_c14_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_g2" class="completion-c14">
+                    <label for="c_c14_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_g3" class="completion-c14">
+                    <label for="c_c14_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_g4" class="completion-c14">
+                    <label for="c_c14_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_g5" class="completion-c14">
+                    <label for="c_c14_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_g6" class="completion-c14">
+                    <label for="c_c14_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_g7" class="completion-c14">
+                    <label for="c_c14_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_t1" class="completion-c14">
+                    <label for="c_c14_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c14_t2" class="completion-c14">
+                    <label for="c_c14_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>The Forgotten</h3>
+                    <button id="checkAllC15">Check All</button>
+                    <button id="uncheckAllC15">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c15_g1" class="completion-c15">
+                    <label for="c_c15_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_g2" class="completion-c15">
+                    <label for="c_c15_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_g3" class="completion-c15">
+                    <label for="c_c15_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_g4" class="completion-c15">
+                    <label for="c_c15_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_g5" class="completion-c15">
+                    <label for="c_c15_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_g6" class="completion-c15">
+                    <label for="c_c15_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_g7" class="completion-c15">
+                    <label for="c_c15_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_t1" class="completion-c15">
+                    <label for="c_c15_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c15_t2" class="completion-c15">
+                    <label for="c_c15_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Bethany</h3>
+                    <button id="checkAllC16">Check All</button>
+                    <button id="uncheckAllC16">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c16_g1" class="completion-c16">
+                    <label for="c_c16_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_g2" class="completion-c16">
+                    <label for="c_c16_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_g3" class="completion-c16">
+                    <label for="c_c16_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_g4" class="completion-c16">
+                    <label for="c_c16_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_g5" class="completion-c16">
+                    <label for="c_c16_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_g6" class="completion-c16">
+                    <label for="c_c16_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_g7" class="completion-c16">
+                    <label for="c_c16_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_t1" class="completion-c16">
+                    <label for="c_c16_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c16_t2" class="completion-c16">
+                    <label for="c_c16_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Jacob &amp; Esau</h3>
+                    <button id="checkAllC17">Check All</button>
+                    <button id="uncheckAllC17">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c17_g1" class="completion-c17">
+                    <label for="c_c17_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_g2" class="completion-c17">
+                    <label for="c_c17_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_g3" class="completion-c17">
+                    <label for="c_c17_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_g4" class="completion-c17">
+                    <label for="c_c17_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_g5" class="completion-c17">
+                    <label for="c_c17_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_g6" class="completion-c17">
+                    <label for="c_c17_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_g7" class="completion-c17">
+                    <label for="c_c17_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_t1" class="completion-c17">
+                    <label for="c_c17_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c17_t2" class="completion-c17">
+                    <label for="c_c17_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Isaac</h3>
+                    <button id="checkAllC18">Check All</button>
+                    <button id="uncheckAllC18">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c18_g1" class="completion-c18">
+                    <label for="c_c18_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_g2" class="completion-c18">
+                    <label for="c_c18_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_g3" class="completion-c18">
+                    <label for="c_c18_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_g4" class="completion-c18">
+                    <label for="c_c18_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_g5" class="completion-c18">
+                    <label for="c_c18_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_g6" class="completion-c18">
+                    <label for="c_c18_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_g7" class="completion-c18">
+                    <label for="c_c18_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_t1" class="completion-c18">
+                    <label for="c_c18_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c18_t2" class="completion-c18">
+                    <label for="c_c18_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Magdalene</h3>
+                    <button id="checkAllC19">Check All</button>
+                    <button id="uncheckAllC19">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c19_g1" class="completion-c19">
+                    <label for="c_c19_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_g2" class="completion-c19">
+                    <label for="c_c19_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_g3" class="completion-c19">
+                    <label for="c_c19_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_g4" class="completion-c19">
+                    <label for="c_c19_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_g5" class="completion-c19">
+                    <label for="c_c19_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_g6" class="completion-c19">
+                    <label for="c_c19_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_g7" class="completion-c19">
+                    <label for="c_c19_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_t1" class="completion-c19">
+                    <label for="c_c19_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c19_t2" class="completion-c19">
+                    <label for="c_c19_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Cain</h3>
+                    <button id="checkAllC20">Check All</button>
+                    <button id="uncheckAllC20">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c20_g1" class="completion-c20">
+                    <label for="c_c20_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_g2" class="completion-c20">
+                    <label for="c_c20_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_g3" class="completion-c20">
+                    <label for="c_c20_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_g4" class="completion-c20">
+                    <label for="c_c20_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_g5" class="completion-c20">
+                    <label for="c_c20_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_g6" class="completion-c20">
+                    <label for="c_c20_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_g7" class="completion-c20">
+                    <label for="c_c20_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_t1" class="completion-c20">
+                    <label for="c_c20_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c20_t2" class="completion-c20">
+                    <label for="c_c20_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Judas</h3>
+                    <button id="checkAllC21">Check All</button>
+                    <button id="uncheckAllC21">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c21_g1" class="completion-c21">
+                    <label for="c_c21_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_g2" class="completion-c21">
+                    <label for="c_c21_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_g3" class="completion-c21">
+                    <label for="c_c21_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_g4" class="completion-c21">
+                    <label for="c_c21_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_g5" class="completion-c21">
+                    <label for="c_c21_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_g6" class="completion-c21">
+                    <label for="c_c21_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_g7" class="completion-c21">
+                    <label for="c_c21_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_t1" class="completion-c21">
+                    <label for="c_c21_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c21_t2" class="completion-c21">
+                    <label for="c_c21_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted &quest;&quest;&quest;</h3>
+                    <button id="checkAllC22">Check All</button>
+                    <button id="uncheckAllC22">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c22_g1" class="completion-c22">
+                    <label for="c_c22_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_g2" class="completion-c22">
+                    <label for="c_c22_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_g3" class="completion-c22">
+                    <label for="c_c22_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_g4" class="completion-c22">
+                    <label for="c_c22_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_g5" class="completion-c22">
+                    <label for="c_c22_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_g6" class="completion-c22">
+                    <label for="c_c22_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_g7" class="completion-c22">
+                    <label for="c_c22_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_t1" class="completion-c22">
+                    <label for="c_c22_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c22_t2" class="completion-c22">
+                    <label for="c_c22_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Eve</h3>
+                    <button id="checkAllC23">Check All</button>
+                    <button id="uncheckAllC23">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c23_g1" class="completion-c23">
+                    <label for="c_c23_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_g2" class="completion-c23">
+                    <label for="c_c23_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_g3" class="completion-c23">
+                    <label for="c_c23_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_g4" class="completion-c23">
+                    <label for="c_c23_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_g5" class="completion-c23">
+                    <label for="c_c23_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_g6" class="completion-c23">
+                    <label for="c_c23_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_g7" class="completion-c23">
+                    <label for="c_c23_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_t1" class="completion-c23">
+                    <label for="c_c23_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c23_t2" class="completion-c23">
+                    <label for="c_c23_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Samson</h3>
+                    <button id="checkAllC24">Check All</button>
+                    <button id="uncheckAllC24">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c24_g1" class="completion-c24">
+                    <label for="c_c24_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_g2" class="completion-c24">
+                    <label for="c_c24_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_g3" class="completion-c24">
+                    <label for="c_c24_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_g4" class="completion-c24">
+                    <label for="c_c24_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_g5" class="completion-c24">
+                    <label for="c_c24_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_g6" class="completion-c24">
+                    <label for="c_c24_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_g7" class="completion-c24">
+                    <label for="c_c24_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_t1" class="completion-c24">
+                    <label for="c_c24_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c24_t2" class="completion-c24">
+                    <label for="c_c24_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Azazel</h3>
+                    <button id="checkAllC25">Check All</button>
+                    <button id="uncheckAllC25">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c25_g1" class="completion-c25">
+                    <label for="c_c25_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_g2" class="completion-c25">
+                    <label for="c_c25_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_g3" class="completion-c25">
+                    <label for="c_c25_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_g4" class="completion-c25">
+                    <label for="c_c25_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_g5" class="completion-c25">
+                    <label for="c_c25_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_g6" class="completion-c25">
+                    <label for="c_c25_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_g7" class="completion-c25">
+                    <label for="c_c25_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_t1" class="completion-c25">
+                    <label for="c_c25_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c25_t2" class="completion-c25">
+                    <label for="c_c25_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Lazarus</h3>
+                    <button id="checkAllC26">Check All</button>
+                    <button id="uncheckAllC26">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c26_g1" class="completion-c26">
+                    <label for="c_c26_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_g2" class="completion-c26">
+                    <label for="c_c26_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_g3" class="completion-c26">
+                    <label for="c_c26_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_g4" class="completion-c26">
+                    <label for="c_c26_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_g5" class="completion-c26">
+                    <label for="c_c26_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_g6" class="completion-c26">
+                    <label for="c_c26_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_g7" class="completion-c26">
+                    <label for="c_c26_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_t1" class="completion-c26">
+                    <label for="c_c26_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c26_t2" class="completion-c26">
+                    <label for="c_c26_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Eden</h3>
+                    <button id="checkAllC27">Check All</button>
+                    <button id="uncheckAllC27">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c27_g1" class="completion-c27">
+                    <label for="c_c27_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_g2" class="completion-c27">
+                    <label for="c_c27_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_g3" class="completion-c27">
+                    <label for="c_c27_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_g4" class="completion-c27">
+                    <label for="c_c27_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_g5" class="completion-c27">
+                    <label for="c_c27_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_g6" class="completion-c27">
+                    <label for="c_c27_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_g7" class="completion-c27">
+                    <label for="c_c27_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_t1" class="completion-c27">
+                    <label for="c_c27_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c27_t2" class="completion-c27">
+                    <label for="c_c27_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Lost</h3>
+                    <button id="checkAllC28">Check All</button>
+                    <button id="uncheckAllC28">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c28_g1" class="completion-c28">
+                    <label for="c_c28_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_g2" class="completion-c28">
+                    <label for="c_c28_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_g3" class="completion-c28">
+                    <label for="c_c28_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_g4" class="completion-c28">
+                    <label for="c_c28_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_g5" class="completion-c28">
+                    <label for="c_c28_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_g6" class="completion-c28">
+                    <label for="c_c28_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_g7" class="completion-c28">
+                    <label for="c_c28_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_t1" class="completion-c28">
+                    <label for="c_c28_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c28_t2" class="completion-c28">
+                    <label for="c_c28_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Lilith</h3>
+                    <button id="checkAllC29">Check All</button>
+                    <button id="uncheckAllC29">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c29_g1" class="completion-c29">
+                    <label for="c_c29_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_g2" class="completion-c29">
+                    <label for="c_c29_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_g3" class="completion-c29">
+                    <label for="c_c29_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_g4" class="completion-c29">
+                    <label for="c_c29_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_g5" class="completion-c29">
+                    <label for="c_c29_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_g6" class="completion-c29">
+                    <label for="c_c29_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_g7" class="completion-c29">
+                    <label for="c_c29_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_t1" class="completion-c29">
+                    <label for="c_c29_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c29_t2" class="completion-c29">
+                    <label for="c_c29_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Keeper</h3>
+                    <button id="checkAllC30">Check All</button>
+                    <button id="uncheckAllC30">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c30_g1" class="completion-c30">
+                    <label for="c_c30_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_g2" class="completion-c30">
+                    <label for="c_c30_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_g3" class="completion-c30">
+                    <label for="c_c30_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_g4" class="completion-c30">
+                    <label for="c_c30_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_g5" class="completion-c30">
+                    <label for="c_c30_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_g6" class="completion-c30">
+                    <label for="c_c30_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_g7" class="completion-c30">
+                    <label for="c_c30_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_t1" class="completion-c30">
+                    <label for="c_c30_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c30_t2" class="completion-c30">
+                    <label for="c_c30_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Apollyon</h3>
+                    <button id="checkAllC31">Check All</button>
+                    <button id="uncheckAllC31">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c31_g1" class="completion-c31">
+                    <label for="c_c31_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_g2" class="completion-c31">
+                    <label for="c_c31_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_g3" class="completion-c31">
+                    <label for="c_c31_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_g4" class="completion-c31">
+                    <label for="c_c31_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_g5" class="completion-c31">
+                    <label for="c_c31_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_g6" class="completion-c31">
+                    <label for="c_c31_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_g7" class="completion-c31">
+                    <label for="c_c31_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_t1" class="completion-c31">
+                    <label for="c_c31_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c31_t2" class="completion-c31">
+                    <label for="c_c31_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Forgotten</h3>
+                    <button id="checkAllC32">Check All</button>
+                    <button id="uncheckAllC32">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c32_g1" class="completion-c32">
+                    <label for="c_c32_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_g2" class="completion-c32">
+                    <label for="c_c32_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_g3" class="completion-c32">
+                    <label for="c_c32_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_g4" class="completion-c32">
+                    <label for="c_c32_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_g5" class="completion-c32">
+                    <label for="c_c32_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_g6" class="completion-c32">
+                    <label for="c_c32_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_g7" class="completion-c32">
+                    <label for="c_c32_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_t1" class="completion-c32">
+                    <label for="c_c32_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c32_t2" class="completion-c32">
+                    <label for="c_c32_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Bethany</h3>
+                    <button id="checkAllC33">Check All</button>
+                    <button id="uncheckAllC33">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c33_g1" class="completion-c33">
+                    <label for="c_c33_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_g2" class="completion-c33">
+                    <label for="c_c33_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_g3" class="completion-c33">
+                    <label for="c_c33_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_g4" class="completion-c33">
+                    <label for="c_c33_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_g5" class="completion-c33">
+                    <label for="c_c33_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_g6" class="completion-c33">
+                    <label for="c_c33_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_g7" class="completion-c33">
+                    <label for="c_c33_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_t1" class="completion-c33">
+                    <label for="c_c33_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c33_t2" class="completion-c33">
+                    <label for="c_c33_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                    <h3>Tainted Jacob</h3>
+                    <button id="checkAllC34">Check All</button>
+                    <button id="uncheckAllC34">Uncheck All</button>
+                    <br><br>
+                    <input type="checkbox" id="c_c34_g1" class="completion-c34">
+                    <label for="c_c34_g1"><img src="assets/img/g1_icon.png">&quest;&quest;&quest;</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_g2" class="completion-c34">
+                    <label for="c_c34_g2"><img src="assets/img/g2_icon.png">The Lamb</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_g3" class="completion-c34">
+                    <label for="c_c34_g3"><img src="assets/img/g3_icon.png">Mega Satan</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_g4" class="completion-c34">
+                    <label for="c_c34_g4"><img src="assets/img/g4_icon.png">Ultra Greed</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_g5" class="completion-c34">
+                    <label for="c_c34_g5"><img src="assets/img/g5_icon.png">Delirium</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_g6" class="completion-c34">
+                    <label for="c_c34_g6"><img src="assets/img/g6_icon.png">Mother</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_g7" class="completion-c34">
+                    <label for="c_c34_g7"><img src="assets/img/g7_icon.png">The Beast</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_t1" class="completion-c34">
+                    <label for="c_c34_t1"><img src="assets/img/g8_icon.png">Boss Rush</label>
+                    <br>
+                    <input type="checkbox" id="c_c34_t2" class="completion-c34">
+                    <label for="c_c34_t2"><img src="assets/img/g9_icon.png">Hush</label>
+                    <br>
+                </div>
+                <br>
+                <input type="checkbox" id="completionCheck" class="">
+                <label for="completionCheck">Only generate runs that haven't already been completed</label>
+                <p>If this option is checked, any characters that are marked as fully complete will be automatically unchecked.</p>
+                <p>Completion will be ignored if using the randomizer with more than 1 player.</p>
+                <p>If you want to use presets with completion tracking, then objectives that don't exist must be marked as complete for the randomizer to work properly.</p>
+                <p>(Example: If using the Afterbirth&#10013; option, Mother and The Beast, must be marked as complete for all characters.)</p>
+                <br> <br>
+
+                <button id="optionsClose">Done</button>
+
+            </div>
+
+            <img src="assets/img/page2.png" alt="Background Page" id="img_page2">
+            <div id="shade"></div>
+
+        </div>
+
+        <div id="preload">
+            <img src="assets/img/arrow_left.png">
+            <img src="assets/img/arrow_right.png">
+            <img src="assets/img/blood.png">
+            <img src="assets/img/blood_alt.png">
+            <img src="assets/img/c1.png">
+            <img src="assets/img/c1_name.png">
+            <img src="assets/img/c2.png">
+            <img src="assets/img/c2_name.png">
+            <img src="assets/img/c3.png">
+            <img src="assets/img/c3_name.png">
+            <img src="assets/img/c4.png">
+            <img src="assets/img/c4_name.png">
+            <img src="assets/img/c5.png">
+            <img src="assets/img/c5_name.png">
+            <img src="assets/img/c6.png">
+            <img src="assets/img/c6_name.png">
+            <img src="assets/img/c7.png">
+            <img src="assets/img/c7_name.png">
+            <img src="assets/img/c8.png">
+            <img src="assets/img/c8_name.png">
+            <img src="assets/img/c9.png">
+            <img src="assets/img/c9_name.png">
+            <img src="assets/img/c10.png">
+            <img src="assets/img/c10_name.png">
+            <img src="assets/img/c11.png">
+            <img src="assets/img/c11_name.png">
+            <img src="assets/img/c12.png">
+            <img src="assets/img/c12_name.png">
+            <img src="assets/img/c13.png">
+            <img src="assets/img/c13_name.png">
+            <img src="assets/img/c14.png">
+            <img src="assets/img/c14_name.png">
+            <img src="assets/img/c15.png">
+            <img src="assets/img/c15_name.png">
+            <img src="assets/img/c16.png">
+            <img src="assets/img/c16_name.png">
+            <img src="assets/img/c17.png">
+            <img src="assets/img/c17_name.png">
+            <img src="assets/img/c18.png">
+            <img src="assets/img/c18_name.png">
+            <img src="assets/img/c19.png">
+            <img src="assets/img/c19_name.png">
+            <img src="assets/img/c20.png">
+            <img src="assets/img/c20_name.png">
+            <img src="assets/img/c21.png">
+            <img src="assets/img/c21_name.png">
+            <img src="assets/img/c22.png">
+            <img src="assets/img/c22_name.png">
+            <img src="assets/img/c23.png">
+            <img src="assets/img/c23_name.png">
+            <img src="assets/img/c24.png">
+            <img src="assets/img/c24_name.png">
+            <img src="assets/img/c25.png">
+            <img src="assets/img/c25_name.png">
+            <img src="assets/img/c26.png">
+            <img src="assets/img/c26_name.png">
+            <img src="assets/img/c27.png">
+            <img src="assets/img/c27_name.png">
+            <img src="assets/img/c28.png">
+            <img src="assets/img/c28_name.png">
+            <img src="assets/img/c29.png">
+            <img src="assets/img/c29_name.png">
+            <img src="assets/img/c30.png">
+            <img src="assets/img/c30_name.png">
+            <img src="assets/img/c31.png">
+            <img src="assets/img/c31_name.png">
+            <img src="assets/img/c32.png">
+            <img src="assets/img/c32_name.png">
+            <img src="assets/img/c33.png">
+            <img src="assets/img/c33_name.png">
+            <img src="assets/img/c34.png">
+            <img src="assets/img/c34_name.png">
+            <img src="assets/img/ch1.png">
+            <img src="assets/img/ch2.png">
+            <img src="assets/img/ch3.png">
+            <img src="assets/img/ch4.png">
+            <img src="assets/img/ch5.png">
+            <img src="assets/img/ch6.png">
+            <img src="assets/img/ch7.png">
+            <img src="assets/img/ch8.png">
+            <img src="assets/img/ch9.png">
+            <img src="assets/img/ch10.png">
+            <img src="assets/img/ch11.png">
+            <img src="assets/img/ch12.png">
+            <img src="assets/img/g1.png">
+            <img src="assets/img/g1_icon.png">
+            <img src="assets/img/g2.png">
+            <img src="assets/img/g2_icon.png">
+            <img src="assets/img/g3.png">
+            <img src="assets/img/g3_icon.png">
+            <img src="assets/img/g4.png">
+            <img src="assets/img/g4_icon.png">
+            <img src="assets/img/g5.png">
+            <img src="assets/img/g5_icon.png">
+            <img src="assets/img/g6.png">
+            <img src="assets/img/g6_icon.png">
+            <img src="assets/img/g7.png">
+            <img src="assets/img/g7_icon.png">
+            <img src="assets/img/g8.png">
+            <img src="assets/img/g8_icon.png">
+            <img src="assets/img/g9.png">
+            <img src="assets/img/g9_icon.png">
+            <img src="assets/img/icon.png">
+            <img src="assets/img/menuoverlay.png">
+            <img src="assets/img/menushadow.png">
+            <img src="assets/img/options.png">
+            <img src="assets/img/page_blood.png">
+            <img src="assets/img/page_alt_blood.png">
+            <img src="assets/img/page2.png">
+            <img src="assets/img/questionmark.png">
+            <img src="assets/img/random.png">
+            <img src="assets/img/randomize.png">
+        </div>
+
+        <script src="assets/scripts/initialize.js"></script>
+        <script src="assets/scripts/randomize.js"></script>
+        <script src="assets/scripts/buttons.js"></script>
+
+	</body>
+	
+</html>

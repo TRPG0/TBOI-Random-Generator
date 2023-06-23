@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+	
+		<meta charset="utf-8">
+		<title>How to use my random run generator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet"  href="styles.css">
+        <link rel="icon" href="assets/logo.svg">
+
+	</head>
+	
+	<body>
+
+		<h1>How to use my Binding of Isaac Random Run Generator in OBS</h1>
+        <h2>Add a new Browser source in your scene</h2>
+        <img src="assets/img1.png">
+        <p>Note: If your browser scene doesn't seem to be working, try disabling browser source hardware acceleration in Settings <span class="material-icons">chevron_right</span> Advanced <span class="material-icons">chevron_right</span> Sources <span class="material-icons">chevron_right</span> Enable Browser Source Hardware Acceleration</p>
+        <h2>Change the settings of the browser source</h2>
+        <img src="assets/img2.png">
+        <p>Set the URL to https://trpgstuff.com/isaac/chroma</p>
+        <p>Set the width to 1200 and the height to 600. This can be set to a higher resolution if desired, but try to keep it at or around a 2:1 aspect ratio for best results.</p>
+        <p>Remove anything in the Custom CSS box.</p>
+        <p>Optionally, if you're really desperate for performance, you can check the "Use custom frame rate" box, and set it to something as low as 1 FPS, since the randomizer is something that would not need to be updated very often. Note that doing this will make it very annoying to change any settings in the randomizer though.</p>
+        <h2>Set up the randomizer with whatever options you would like</h2>
+        <img src="assets/img3.png">
+        <p>To interact with the randomizer, right click on the source and click "Interact"</p>
+        <p>Set any options you want for the randomizer, and then set the version-specific options, such as display type, alignment, text color, and background color. (if applicable)</p>
+        <img src="assets/img9.png">
+        <p>Note: Alignment has no effect if used with the "Full" display option, and text color only has an effect on the "Plain text" option.</p>
+        <h2>Crop the browser source</h2>
+        <img src="assets/img4.png">
+        <p>Crop the browser source by holding Alt while clicking on the transform points.</p>
+        <img src="assets/img5.png">
+        <p>This can also be done manually by right clicking <span class="material-icons">chevron_right</span> Transform <span class="material-icons">chevron_right</span> Edit Transform</p>
+        <h2>Add a filter to chroma key out the background</h2>
+        <img src="assets/img7.png">
+        <p>Add a filter to the source by pressing the Filters button or by right clicking it and selecting Filters</p>
+        <img src="assets/img8.png">
+        <p>Add the Chroma Key effect filter</p>
+        <p>Tweak some settings to make the filter look better:</p>
+        <img src="assets/img6.png">
+        <p>Set Similarity to 250, Smoothness to 300, and Key Color Spill Reduction to 300</p>
+        <h2>Done!</h2>
+        <p>To get a new result, interact with the browser source by right clicking <span class="material-icons">chevron_right</span> Interact, and press the randomize button. That's it!</p>
+        <p>If you're going to use this in a YouTube video, all I ask is that you put a link to https://trpgstuff.com/isaac in the description of the video. If you're a streamer, then just have the link ready to give out in case anyone wants to use it themselves. Maybe a bot command, or you could just tell it to them. It's not too hard to remember or anything.</p>
+
+        <a href="../"><span class="material-icons">arrow_back</span> Back to the previous page</a>
+
+	</body>
+	
+</html>
